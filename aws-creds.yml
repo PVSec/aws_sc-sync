@@ -1,0 +1,9 @@
+#The Section names must match the suffix of the scan name
+#in SecurityCenter. For example, if scan name is AWS:PRODUCTION
+#the section name must be set to 'production'
+account-ops:
+    aws_access_key_id: XXXXXXXXXXXXXXXXXXXX
+    aws_secret_access_key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#account-dev:
+#    aws_access_key_id: XXXXXXXXXXXXXXXXXXXX
+#    aws_secret_access_key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
