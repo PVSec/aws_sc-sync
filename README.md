@@ -2,7 +2,7 @@
 This script will synchronize the AWS Public IPs with its corresponding SecurityCenter scan target configuration.
 
 # Details
-The script allows you to scan your Internet exposed instances with SecurityCenter. The way the script works is that it authenticates to all your AWS accounts and pulls out any instances with a public IP (including the instances belonging to Autoscale Groups). The script automatically filters out any micro or small instance types (to conform to AWS scanning requirements), instances belonging to Autoscale Groups, as well as instnaces matching a specific key/value tag pair (if specified), and then finds the matching scan in SecurityCenter and updates the scanning targets.
+The script allows you to scan your Internet exposed instances with SecurityCenter. The script authenticates to all your AWS accounts and pulls out any instances with a public IP (including the instances belonging to Autoscale Groups). The script filters out any micro or small instance types (to conform to AWS scanning requirements), instances belonging to Autoscale Groups, as well as instances matching a specific key/value tag pair (if specified) and then finds the matching scan in SecurityCenter and updates the scanning targets.
 
 # Requirements
 The script has dependencies on the following python modules:
