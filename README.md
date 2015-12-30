@@ -2,7 +2,7 @@
 This script will synchronize the AWS Public IPs with its corresponding SecurityCenter scan target configuration.
 
 # Details
-The script allows you to scan your Internet exposed instances with SecurityCenter. The way the script works is that it authenticates to all your AWS accounts and pulls out any instances with a public IP (including the instances belonging to Autoscale Groups). The script automatically filters out any micro or small instance types (to conform to AWS scanning requirements), instances belonging to Autoscale Groups, as well as instnaces matching a specific key/value tag pair (if specified), and then finds the matching scan in SecurityCenter and updates the scanning targets.
+The script allows you to scan your Internet exposed instances with SecurityCenter. The way the script works is that it authenticates to all your AWS accounts and pulls out any instances with a public IP (including the instances belonging to Autoscale Groups). The script automatically filters out any micro or small instance types (to conform to AWS scanning requirements), instances belonging to Autoscale Groups, as well as instances matching a specific key/value tag pair (if specified), and then finds the matching scan in SecurityCenter and updates the scanning targets.
 
 # Requirements
 The script has dependencies on the following python modules:
@@ -22,11 +22,11 @@ Before you can begin using the script you will need to configure a couple of set
 * Define what text is prefixed to the AWS scans in SecurityCenter using the _PREFIXED_SCAN_NAME variable.
 
 ### aws-config.cfg
-* Set the proxy settings
+* Set the proxy settings (optional)
 * Set the SecurityCenter API URL
 
 ### aws-creds.yml
-* Set the credentials for each AWS account. The AWS account name in this file must match the scan name in SecurityCenter without the prefixed scan name. For example, if in SecurityCenter the scan name is *AWS:XYZ-PROD* then the account name in this file must be *XYZ-PROD* in order for the script to match them.
+* Set the credentials for each AWS account. The AWS account name (arbitrary name give to the AWS account) in this file must match the scan name in SecurityCenter without the prefixed scan name. For example, if in SecurityCenter the scan name is *AWS:XYZ-PROD* then the account name in this file must be *XYZ-PROD* in order for the script to match them.
 
 ### creds.yml
 * Set the credentials of the proxy server (if required)

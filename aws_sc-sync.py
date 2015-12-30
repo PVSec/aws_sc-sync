@@ -312,7 +312,7 @@ class AwsAdapter(object):
           if regional_as_instances:
             raw_as_instances[entity].extend(regional_as_instances)
         except (BotoServerError, EC2ResponseError) as e:
-          print("\t[-] Error retrieving AutoScale data from {region}: {error}.".format(region=conn['region'], error=e.message))
+          print("\t[-] Error retrieving AutoScale data from {region}: {error}".format(region=conn['region'], error=e.message))
 
     return raw_as_instances
 
@@ -332,11 +332,20 @@ def main():
   # with the latest AWS IP list
   if sc_scans:
     for scan in sc_scans:
+      matched = False
       for instance in aws_instances:
         if scan == instance.upper():
-          print(scan + ":", len(aws_instances[instance]))
+          print("[+] {scan}:".format(scan=scan), len(aws_instances[instance]))
+          print("\t IP Adresses:")
+          for ip in aws_instances[instance]:
+            print("\t\t{ip}".format(ip=ip))
           if len(aws_instances[instance]) > 0:
             sc.update_scan(sc_scans[scan][0], aws_instances[instance])
+          matched = True
+          break
+      # If a match is not found for the AWS account name in SecurityCenter an error message is given
+      if not matched:
+          print("[-] No match found for scan name {prefix}:{scan}".format(prefix=_PREFIXED_SCAN_NAME, scan=scan))
 
   sc.logout()
 
