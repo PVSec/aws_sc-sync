@@ -31,6 +31,9 @@ _CREDENTIALS_FILE = 'creds.yml'
 _FILTERS = [{'key': 'Name', 'value': 'autobots'},
   {'key': 'Name', 'value': 'xwy'}]
 
+# Instance types that must be excluded
+_INSTANCE_TYPES = ['micro', 'small']
+
 # Define what text is prefixed to the AWS scans in SecurityCenter.
 # For example, if you use the scan name AWS:WEB_PROD then here
 # you would set the 'AWS'
@@ -74,7 +77,8 @@ class SecurityCenterAdapter(object):
 
     try:
       response = self.send_request_to_sc(module='token', method='POST', payload=data)
-      self.sc_session.headers.update({'X-SecurityCenter': response['response']['token']})
+      if response:
+        self.sc_session.headers.update({'X-SecurityCenter': response['response']['token']})
 
     except Exception as e:
       print("Error: " + str(e))
@@ -96,7 +100,7 @@ class SecurityCenterAdapter(object):
       content = response.json()
       return content
     except Exception as e:
-      print("Error: " + str(e))
+      print("[-] Unable To Send Request to SecurityCenter: {error}".format(error=e))
       return None
 
   def get_scan_list(self):
@@ -105,12 +109,15 @@ class SecurityCenterAdapter(object):
       'fields': 'id,name'
     }
 
-    response = self.send_request_to_sc(module='scan', method='GET', payload=data)
-
-    if response['response']:
-      return response['response']['usable']
-    else:
-      print(response['error_msg'])
+    try:
+      response = self.send_request_to_sc(module='scan', method='GET', payload=data)
+      if response['response']:
+        return response['response']['usable']
+      else:
+        print(response['error_msg'])
+        return None
+    except Exception as e:
+      print("[-] The request to obtain a scan list failed: {error}".format(error=e))
       return None
 
   def update_scan(self, scan, ip_list):
@@ -266,7 +273,7 @@ class AwsAdapter(object):
           instance_type = str(i['instance_type'])
           instance_public_ip = str(i['ip_address'])
           if instance_state.find('running') != -1 and i['id'] not in self.as_instances_ids \
-            and instance_type.find('micro') == -1 and instance_type.find('small') == -1:
+            and instance_type.split('.')[1] not in _INSTANCE_TYPES:
             filter_triggered = False
             for f in _FILTERS:
               if f['key'] in i['tags']:
@@ -346,8 +353,17 @@ def main():
       # If a match is not found for the AWS account name in SecurityCenter an error message is given
       if not matched:
           print("[-] No match found for scan name {prefix}:{scan}".format(prefix=_PREFIXED_SCAN_NAME, scan=scan))
+  else:
+    print("[-] No AWS related SecurityCenter scans found. Outputing AWS Public IPs discovered.")
+    for instance in aws_instances:
+      print("[+] {scan}:".format(scan=instance.upper()), len(aws_instances[instance]))
+      print("\t IP Adresses:")
+      for ip in aws_instances[instance]:
+        print("\t\t{ip}".format(ip=ip))
 
+  print("[+] Login out of SecurityCenter.")
   sc.logout()
 
 if __name__ == "__main__":
   main()
+  
