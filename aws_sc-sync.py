@@ -32,7 +32,7 @@ _FILTERS = [{'key': 'Name', 'value': 'autobots'},
   {'key': 'Name', 'value': 'xwy'}]
 
 # Instance types that must be excluded
-_INSTANCE_TYPES = ['micro', 'small']
+_INSTANCE_TYPES = ['nano', 'micro', 'small']
 
 # Define what text is prefixed to the AWS scans in SecurityCenter.
 # For example, if you use the scan name AWS:WEB_PROD then here
